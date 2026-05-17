@@ -1,0 +1,35 @@
+type AMMSwap @entity {
+  id: ID!
+  pair: Bytes!
+  sender: Bytes!
+  tokenIn: Bytes!
+  tokenOut: Bytes!
+  amountIn: BigInt!
+  amountOut: BigInt!
+  timestamp: BigInt!
+}
+
+type Position @entity {
+  id: ID! # user address
+  collateral: BigInt!
+  debt: BigInt!
+  healthFactor: BigInt!
+}
+
+type VaultAccount @entity {
+  id: ID! # user address
+  assets: BigInt!
+  shares: BigInt!
+}
+
+type Proposal @entity {
+  id: ID!
+  proposer: Bytes!
+  description: String!
+  state: String!
+  startBlock: BigInt!
+  endBlock: BigInt!
+  forVotes: BigInt!
+  againstVotes: BigInt!
+  abstainVotes: BigInt!
+}

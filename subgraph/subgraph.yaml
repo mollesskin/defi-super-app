@@ -1,0 +1,25 @@
+specVersion: 0.0.5
+schema:
+  file: ./schema.graphql
+
+dataSources:
+  - kind: ethereum
+    name: AMMPair
+    network: arbitrum-sepolia
+    source:
+      address: "0xPAIR_ADDRESS"
+      abi: AMMPair
+      startBlock: 123456
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.7
+      language: wasm/assemblyscript
+      entities:
+        - AMMSwap
+      abis:
+        - name: AMMPair
+          file: ./abis/AMMPair.json
+      eventHandlers:
+        - event: Swap(indexed address,indexed address,uint256,indexed address,uint256,address)
+          handler: handleSwap
+      file: ./src/mapping.ts
