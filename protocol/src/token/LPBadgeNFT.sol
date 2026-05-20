@@ -7,7 +7,7 @@ import {Ownable} from "openzeppelin-contracts/access/Ownable.sol";
 contract LPBadgeNFT is ERC721, Ownable {
     uint256 public nextId;
 
-    constructor() ERC721("LP Badge", "LPB") Ownable(msg.sender) {}
+    constructor() ERC721("LP Badge", "LPB") {}
 
     function mint(address to) external onlyOwner returns (uint256) {
         uint256 id = ++nextId;

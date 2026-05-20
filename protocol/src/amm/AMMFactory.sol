@@ -10,7 +10,7 @@ contract AMMFactory is Ownable {
 
     event PairCreated(address indexed token0, address indexed token1, address pair, uint256);
 
-    constructor() Ownable(msg.sender) {}
+    constructor() {}
 
     function createPair(address tokenA, address tokenB) external onlyOwner returns (address pair) {
         require(tokenA != tokenB, "IDENTICAL_ADDRESSES");

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ethers } from 'ethers';
+import { parseEther } from 'ethers';
 import { useWalletContext } from '../context/WalletContext';
 import { getAddresses } from '../config/addresses';
 import AMMFactoryABI from '../abi/AMMFactory.json';
@@ -40,15 +40,16 @@ export default function SwapForm() {
       setLoading(true);
       
       const addresses = getAddresses(chainId);
-      const signer = provider.getSigner();
+      const signer = await provider.getSigner();
       
-      const ammContract = new ethers.Contract(
+      const { Contract } = await import('ethers');
+      const ammContract = new Contract(
         addresses.ammFactory,
         AMMFactoryABI.abi,
         signer
       );
 
-      const amountInWei = ethers.utils.parseEther(amountIn);
+      const amountInWei = parseEther(amountIn);
       
       console.log('Swapping:', {
         tokenIn,
@@ -56,16 +57,15 @@ export default function SwapForm() {
         amountIn: amountInWei.toString(),
       });
 
-      // Swap transaction
       const tx = await ammContract.swap(
         tokenIn,
         tokenOut,
         amountInWei,
-        0 // minAmountOut (0 for testing)
+        0
       );
 
       setTxHash(tx.hash);
-      const receipt = await tx.wait();
+      await tx.wait();
       
       setSuccess(`Swap successful! Tx: ${tx.hash.substring(0, 10)}...`);
       setTokenIn('');
@@ -87,7 +87,7 @@ export default function SwapForm() {
           type="text"
           value={tokenIn}
           onChange={(e) => setTokenIn(e.target.value)}
-          placeholder="0x..."
+          placeholder="0x23c6a6da50904C036C9A7d1f54e5F789ADc68aD6"
           className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none transition"
         />
       </div>
@@ -99,7 +99,7 @@ export default function SwapForm() {
           step="0.0001"
           value={amountIn}
           onChange={(e) => setAmountIn(e.target.value)}
-          placeholder="0.0"
+          placeholder="1.0"
           className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none transition"
         />
       </div>
@@ -110,7 +110,7 @@ export default function SwapForm() {
           type="text"
           value={tokenOut}
           onChange={(e) => setTokenOut(e.target.value)}
-          placeholder="0x..."
+          placeholder="0x39D48b50Ca34F379c49C0214A4F1DC58D829f0aC"
           className="w-full bg-gray-700 border border-gray-600 rounded px-4 py-2 text-white placeholder-gray-500 focus:border-blue-500 focus:outline-none transition"
         />
       </div>

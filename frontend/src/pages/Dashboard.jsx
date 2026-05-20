@@ -1,41 +1,7 @@
-import { useState, useEffect } from 'react';
 import { useWalletContext } from '../context/WalletContext';
-import { Contract } from 'ethers';
-import { getAddresses } from '../config/addresses';
-import GovTokenABI from '../abi/GovToken.json';
 
 export default function Dashboard() {
-  const { account, isConnected, balance, chainId, provider } = useWalletContext();
-  const [govTokenBalance, setGovTokenBalance] = useState('0');
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    if (!isConnected || !provider || !account || !chainId) return;
-
-    const fetchGovTokenBalance = async () => {
-      try {
-        setLoading(true);
-        const addresses = getAddresses(chainId);
-        
-        const contract = new Contract(
-          addresses.govToken,
-          GovTokenABI.abi,
-          provider
-        );
-        
-        const balance = await contract.balanceOf(account);
-        const formatted = balance.toString() / 1e18;
-        setGovTokenBalance(formatted.toFixed(4));
-      } catch (error) {
-        console.error('Error fetching balance:', error);
-        setGovTokenBalance('0');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchGovTokenBalance();
-  }, [isConnected, account, chainId, provider]);
+  const { account, isConnected, balance, chainId } = useWalletContext();
 
   const CHAIN_NAMES = {
     421614: 'Arbitrum Sepolia',
@@ -63,13 +29,13 @@ export default function Dashboard() {
         </div>
 
         <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-          <h2 className="text-lg font-semibold mb-4 text-gray-300">Gov Token Balance</h2>
-          <p className="text-3xl font-bold">{govTokenBalance} GOV</p>
+          <h2 className="text-lg font-semibold mb-4 text-gray-300">Network</h2>
+          <p className="text-sm font-semibold">{CHAIN_NAMES[chainId] || `Chain ID: ${chainId}`}</p>
         </div>
 
         <div className="bg-gray-800 p-6 rounded-lg border border-gray-700">
-          <h2 className="text-lg font-semibold mb-4 text-gray-300">Network</h2>
-          <p className="text-sm font-semibold">{CHAIN_NAMES[chainId] || `Chain ID: ${chainId}`}</p>
+          <h2 className="text-lg font-semibold mb-4 text-gray-300">Status</h2>
+          <p className="text-sm font-semibold text-green-400">Connected ✓</p>
         </div>
       </div>
 
